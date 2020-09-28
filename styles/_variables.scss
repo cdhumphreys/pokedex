@@ -40,7 +40,7 @@ $types: ("grass": $grass,
     "fairy": $fairy,
     "unknown": $unknown,
 );
-
+// Background colour generators
 @each $type,
 $colour in $types {
     .bg--#{$type} {
@@ -55,6 +55,26 @@ $colour in $types {
     $colour_nested in $types {
         .bg--#{$type}--#{$type_nested} {
             background: linear-gradient(to bottom right, $colour, $colour_nested);
+        }
+    }
+}
+
+// Box shadow generators
+$boxShadowParams: 0px 4px 10px 2px;
+@each $type,
+$colour in $types {
+    .bg--#{$type} {
+        box-shadow: $boxShadowParams rgba($colour, 0.5);
+    }
+}
+
+@each $type,
+$colour in $types {
+
+    @each $type_nested,
+    $colour_nested in $types {
+        .boxShadow--#{$type}--#{$type_nested} {
+            box-shadow: $boxShadowParams rgba($colour, 0.5), $boxShadowParams rgba($colour_nested, 0.5);
         }
     }
 }
