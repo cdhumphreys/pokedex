@@ -3,7 +3,7 @@ import Head from "next/head";
 
 const Layout = ({ title = "Pokemon", children }) => {
     return (
-        <div className="bg-gray-300 pb-12">
+        <div className="bg-gray-200 pb-12">
             <Head>
                 <title>{title}</title>
                 <link rel="icon" href="/favicon.ico" />
