@@ -12,7 +12,7 @@ const Pokemon = ({ pmon, image }) => {
     return (
         <Layout>
             <Link href="/" className="text-white">
-                <a>Back</a>
+                <a className="p-4">Back</a>
             </Link>
             <div className="space-y-10">
                 <section>
