@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import PokeCard from "../PokeCard";
 import useFuzzySearch from "../hooks/useFuzzySearch";
 
-const SearchPokemon = ({ allPokemon }) => {
-    const [searchTerm, setSearchTerm] = useState("");
+const SearchPokemon = ({ allPokemon, sort }) => {
+    // Constants
     const searchKeys = ["name", "pokedexId"];
-    const [isSearching, filteredResults, setFuzzySearchTerm] = useFuzzySearch(allPokemon, searchKeys, "");
 
+    // State
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isSearching, filteredResults, setFuzzySearchTerm] = useFuzzySearch(allPokemon, searchKeys, "", sort);
+
+    // Update results on search or sort change
     useEffect(() => {
         setFuzzySearchTerm(searchTerm);
-    }, [searchTerm]);
+    }, [searchTerm, sort]);
 
     return (
         <div>
-            <div className="bg-gray-300 flex flex-row rounded-lg items-center mb-10 py-2 px-2">
+            <div className="bg-gray-400 flex flex-row rounded-lg items-center mb-10 py-2 px-2">
                 <span className="px-4">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +37,7 @@ const SearchPokemon = ({ allPokemon }) => {
                 <input
                     type="text"
                     placeholder="What Pokémon are you looking for?"
-                    className="bg-transparent text-gray-800 flex flex-grow px-4 py-2 outline-none"
+                    className="bg-transparent text-gray-900 flex flex-grow px-4 py-2 outline-none"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
