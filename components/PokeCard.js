@@ -12,7 +12,7 @@ const PokeCard = ({ pokemon }) => {
     let pokemonTypes = [];
 
     try {
-        pokemonTypes = pokemon.data.types;
+        pokemonTypes = pokemon.types;
         const mainTypeNames = pokemonTypes.map((t) => t.type.name).slice(0, 2);
         bgClasses = mainTypeNames.reduce((acc, iter) => {
             return acc + "--" + iter;

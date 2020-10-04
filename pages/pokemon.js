@@ -1,9 +1,14 @@
 import React from "react";
 import Link from "next/link";
+
+import { getPokeData } from "./api/pokemon";
+
 import Layout from "../components/Layout";
 import PokemonTypePill from "../components/PokemonTypePill";
 
-const Pokemon = ({ pmon, image }) => {
+// Individual pokemon details page
+const Pokemon = ({ pmon }) => {
+    // Weight and height are given to 1dp without the decimal point, God knows why you would do this
     const heightString = String(pmon.height).padStart(2, "0");
     const weightString = String(pmon.weight).padStart(2, "0");
     const height = `${heightString.slice(0, heightString.length - 1)}.${heightString.slice(-1)}`;
@@ -12,13 +17,28 @@ const Pokemon = ({ pmon, image }) => {
     return (
         <Layout>
             <Link href="/" className="text-white">
-                <a className="p-4">Back</a>
+                <a className="inline-flex flex-row items-center p-4">
+                    <svg
+                        className="w-6 h-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                        />
+                    </svg>
+                </a>
             </Link>
             <div className="space-y-10">
                 <section>
                     <h1 className="capitalize text-4xl font-bold text-center mb-2">{pmon.name}</h1>
                     <div className="max-w-50 border-2 border-blue-300 bg-white rounded-lg">
-                        <img className="mx-auto" src={image} alt={pmon.name} />
+                        <img className="mx-auto" src={pmon.image} alt={pmon.name} />
                     </div>
                     <p>
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error tenetur veritatis impedit
@@ -58,16 +78,10 @@ export default Pokemon;
 export async function getServerSideProps({ query }) {
     const pokedexId = query.id;
     const id = parseInt(pokedexId, 10);
-    try {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        const pmon = await res.json();
-
-        const image = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${pokedexId}.png`;
-
-        return {
-            props: { pmon, image },
-        };
-    } catch (error) {
-        console.error(error);
-    }
+    const pokemonData = await getPokeData(id - 1, id);
+    return {
+        props: {
+            pmon: pokemonData[0],
+        },
+    };
 }

@@ -1,61 +1,82 @@
+import React, { useState } from "react";
+
+import { getPokeData } from "./api/pokemon";
+
 import Layout from "../components/Layout";
 import SearchPokemon from "../components/search/SearchPokemon";
+import Sort from "../components/search/Sort";
+
+const Nav = ({ onSortClick }) => (
+    <nav className="flex flex-row items-center justify-end space-x-2 sticky top-0 p-4 bg-gray-200 z-20 md:shadow">
+        <div onClick={onSortClick} className="p-2">
+            <svg
+                className="w-8 h-8"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                />
+            </svg>
+        </div>
+        <div className="p-2">
+            <svg
+                className="w-8 h-8"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                />
+            </svg>
+        </div>
+    </nav>
+);
 
 export default function Home({ pokemon }) {
+    const sortChoices = [
+        { displayText: "Smallest number first", key: "pokedexId", direction: "+" },
+        { displayText: "Highest number first", key: "pokdexId", direction: "-" },
+        { displayText: "A-Z", key: "name", direction: "+" },
+        { displayText: "Z-A", key: "name", direction: "-" },
+    ];
+    const [sortChoice, setSortChoice] = useState(sortChoices[0]);
+    const [popupIsVisible, setPopupIsVisible] = useState(false);
+
     return (
-        <div>
+        <>
+            <Nav onSortClick={() => setPopupIsVisible(!popupIsVisible)} />
             <Layout title="NextJS Pokedex">
-                <div>
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold">Pokédex</h1>
-                        <h2 className="text-md">Search for Pokémon by name or using the National Pokédex number.</h2>
-                    </div>
-                    <SearchPokemon allPokemon={pokemon} />
+                <div className="mb-6">
+                    <h1 className="text-3xl font-bold">Pokédex</h1>
+                    <h2 className="text-md">Search for Pokémon by name or using the National Pokédex number.</h2>
                 </div>
+                <SearchPokemon allPokemon={pokemon} sort={sortChoice} />
+                <Sort
+                    visible={popupIsVisible}
+                    setterFn={setSortChoice}
+                    currentChoice={sortChoice}
+                    sortChoices={sortChoices}
+                />
             </Layout>
-        </div>
+        </>
     );
 }
 
-async function getPokeData(index) {
-    try {
-        const pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${index + 1}`);
-        const data = await pokedata.json();
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export async function getStaticProps() {
-    let pokemon = [];
-    try {
-        // Only has name and url
-        const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
-        const { results } = await res.json();
+    const pokemon = await getPokeData(0, 50);
 
-        // Fetch image, other data
-        pokemon = results.map(async (result, index) => {
-            const paddedIndex = `${index + 1}`.padStart(3, "0");
-            const image = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${paddedIndex}.png`;
-
-            // Rest of useful data
-            const data = await getPokeData(index);
-            return {
-                ...result,
-                image,
-                pokedexId: paddedIndex,
-                data,
-            };
-        });
-
-        var pokemonDetails = await Promise.all(pokemon).then((complete) => {
-            return complete;
-        });
-        return {
-            props: { pokemon: pokemonDetails },
-        };
-    } catch (error) {
-        console.error(error);
-    }
+    return {
+        props: { pokemon },
+    };
 }
