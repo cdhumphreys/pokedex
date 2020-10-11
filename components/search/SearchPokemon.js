@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PokeCard from "../PokeCard";
 import useFuzzySearch from "../hooks/useFuzzySearch";
+import useSort from "../hooks/useSort";
 
 const SearchPokemon = ({ allPokemon, sort }) => {
     // Constants
@@ -8,12 +9,19 @@ const SearchPokemon = ({ allPokemon, sort }) => {
 
     // State
     const [searchTerm, setSearchTerm] = useState("");
-    const [isSearching, filteredResults, setFuzzySearchTerm] = useFuzzySearch(allPokemon, searchKeys, "", sort);
+    const [isSearching, filteredResults, setFuzzySearchTerm] = useFuzzySearch(allPokemon, searchKeys, "");
+    const [sortedList, setSortKey, setSortDirection] = useSort(filteredResults, sort.key, sort.direction);
 
-    // Update results on search or sort change
+    // Update results on search
     useEffect(() => {
         setFuzzySearchTerm(searchTerm);
-    }, [searchTerm, sort]);
+    }, [searchTerm]);
+
+    // Sort searched list
+    useEffect(() => {
+        setSortKey(sort.key);
+        setSortDirection(sort.direction);
+    }, [sort.key, sort.direction]);
 
     return (
         <div>
@@ -46,7 +54,7 @@ const SearchPokemon = ({ allPokemon, sort }) => {
                 {isSearching ? (
                     <div>Searching...</div>
                 ) : (
-                    filteredResults.map((p) => {
+                    sortedList.map((p) => {
                         const url = `https://www.pokemon.com/uk/pokedex/${p.name}`;
                         return <PokeCard key={p.pokedexId} pokemon={{ ...p, url }} />;
                     })

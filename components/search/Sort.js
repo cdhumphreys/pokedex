@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import Button from "../Button";
 
-const Sort = ({ visible, setterFn, sortChoices, currentChoice }) => {
-    const [isVisible, setIsVisible] = useState(visible);
-
+const Sort = ({ visible, setVisibleFn, setterFn, sortChoices, currentChoice }) => {
     return (
         <div
-            onClick={() => setIsVisible(false)}
+            onClick={() => setVisibleFn(false)}
             className={`transition duration-500 bg-black bg-opacity-50 fixed bottom-0 flex justify-center left-0 right-0 top-0 z-50 items-end lg:items-center ${
-                isVisible ? "opacity-100 visible" : "opacity-0 invisible"
+                visible ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
         >
             <div
                 className={`transition duration-500 relative bg-white rounded-lg flex flex-col p-4 w-full lg:w-auto ${
-                    isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+                    visible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
                 }`}
             >
                 <div
-                    onClick={() => setIsVisible(false)}
+                    onClick={() => setVisibleFn(false)}
                     className="absolute text-md text-black right-0 top-0 mt-2 mr-2 hidden lg:block"
                 >
                     <svg
@@ -47,6 +45,7 @@ const Sort = ({ visible, setterFn, sortChoices, currentChoice }) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setterFn(sortObj);
+                                    setVisibleFn(false);
                                 }}
                             >
                                 {sortObj.displayText}

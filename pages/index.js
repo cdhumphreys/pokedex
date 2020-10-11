@@ -5,10 +5,11 @@ import { getPokeData } from "./api/pokemon";
 import Layout from "../components/Layout";
 import SearchPokemon from "../components/search/SearchPokemon";
 import Sort from "../components/search/Sort";
+import Button from "../components/Button";
 
 const Nav = ({ onSortClick }) => (
     <nav className="flex flex-row items-center justify-end space-x-2 sticky top-0 p-4 bg-gray-200 z-20 md:shadow">
-        <div onClick={onSortClick} className="p-2">
+        <Button type="button" onClick={onSortClick} isPrimary={true}>
             <svg
                 className="w-8 h-8"
                 xmlns="http://www.w3.org/2000/svg"
@@ -23,8 +24,8 @@ const Nav = ({ onSortClick }) => (
                     d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
                 />
             </svg>
-        </div>
-        <div className="p-2">
+        </Button>
+        <Button isPrimary={false}>
             <svg
                 className="w-8 h-8"
                 xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +40,7 @@ const Nav = ({ onSortClick }) => (
                     d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                 />
             </svg>
-        </div>
+        </Button>
     </nav>
 );
 
@@ -64,6 +65,7 @@ export default function Home({ pokemon }) {
                 <SearchPokemon allPokemon={pokemon} sort={sortChoice} />
                 <Sort
                     visible={popupIsVisible}
+                    setVisibleFn={setPopupIsVisible}
                     setterFn={setSortChoice}
                     currentChoice={sortChoice}
                     sortChoices={sortChoices}
