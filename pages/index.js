@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { getPokeData } from "./api/pokemon";
+import { getGeneration1Pokemon } from "./api/pokemon";
 
 import Layout from "../components/Layout";
 import Nav from "../components/Nav";
@@ -74,7 +74,7 @@ export default function Home({ pokemon }) {
 }
 
 export async function getStaticProps() {
-    const pokemon = await getPokeData(0, 50);
+    const pokemon = await getGeneration1Pokemon();
 
     return {
         props: { pokemon },
