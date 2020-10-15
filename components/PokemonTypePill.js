@@ -1,8 +1,7 @@
 import React from "react";
 import styles from "../styles/pokemon-types.module.scss";
 
-const PokemonTypePill = ({ type, icon = true, text = true }) => {
-    const typeName = type.type.name;
+const PokemonTypePill = ({ typeName, icon = true, text = true }) => {
     let typeIcon = null;
 
     if (icon) {

@@ -35,7 +35,7 @@ const PokeCard = ({ pokemon }) => {
                         <h2 className="text-2xl capitalize text-white font-bold">{name}</h2>
                         <div className="grid gap-1 grid-cols-2 grid-flow-row">
                             {pokemonTypes.map((t) => (
-                                <PokemonTypePill key={t.type.name} type={t} />
+                                <PokemonTypePill key={t.type.name} typeName={t.type.name} />
                             ))}
                         </div>
                     </div>
