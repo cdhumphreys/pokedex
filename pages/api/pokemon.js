@@ -3,42 +3,61 @@ const POKEASSETS_URL = "https://assets.pokemon.com/assets/cms2/img/pokedex/full"
 
 // To get types, attributes, moves etc
 // Each endpoint has to be hit individually
-export async function getPokemonData(start, end) {
+export async function getPokemonData(start, end = null) {
     const requests = [];
     const allTypesData = await getAllPokemonTypes();
 
-    for (let i = start; i <= end; i++) {
-        const image = getPokemonImage(i);
+    // For fetching a range of pokemon e.g. by generation
+    if (start && end) {
+        for (let i = start; i <= end; i++) {
+            const req = fetchPokemonDetails(i, allTypesData);
+            requests.push(req);
+        }
 
-        const req = fetch(`${POKEAPI_URL}/pokemon/${i}`)
-            .then((response) => response.json())
-            .then((data) => {
-                const typesData = data.types.map((t) => allTypesData[t.name]);
-                const p = {
-                    ...data,
-                    image,
-                    pokedexId: `${i}`.padStart(3, "0"),
-                    types: typesData,
-                };
-                return p;
-            })
-            .catch((e) => console.log("error fetching individual pokemon data", e));
-
-        requests.push(req);
+        try {
+            const data = await Promise.all(requests)
+                .then((complete) => {
+                    return complete;
+                })
+                .catch((e) => {
+                    console.log("error", e);
+                });
+            return data;
+        } catch (error) {
+            console.log("error resolving all Pokemon data promises", error);
+        }
+    } else {
+        // For fetching details about a single Pokemon e.g details screen
+        const pokemonData = await fetchPokemonDetails(start, allTypesData);
+        return pokemonData;
     }
+}
 
-    try {
-        const data = await Promise.all(requests)
-            .then((complete) => {
-                return complete;
-            })
-            .catch((e) => {
-                console.log("error", e);
+// Return promise containing pokemon data, image, type data
+function fetchPokemonDetails(pokemonNumber, allTypesData) {
+    const num = parseInt(pokemonNumber, 10);
+    const image = getPokemonImage(num);
+    const url = `${POKEAPI_URL}/pokemon/${num}`;
+    const pokedexId = `${num}`.padStart(3, "0");
+
+    const req = fetch(url)
+        .then((response) => response.json())
+        .then((pokemonData) => {
+            // Attach more details about types (e.g. damage relations between types)
+            const types = pokemonData.types.map((t) => {
+                const typeName = t.type.name;
+                return { ...t, type: allTypesData[typeName] };
             });
-        return data;
-    } catch (error) {
-        console.log("fetching error", error);
-    }
+            const p = {
+                ...pokemonData,
+                image,
+                pokedexId,
+                types,
+            };
+            return p;
+        })
+        .catch((e) => console.log("error fetching individual pokemon data", e));
+    return req;
 }
 
 export function getPokemonImage(pokedexNumber) {
@@ -87,36 +106,46 @@ export function getGeneration8Pokemon() {
 }
 
 export async function getAllPokemonTypes() {
+    // Get list of all pokemon type names, urls
     let typeObjects = [];
     try {
-        const res = await fetch(`${POKEAPI_URL}/types`);
-        const typeObjects = await res.json();
+        const res = await fetch(`${POKEAPI_URL}/type`);
+        const jsonData = await res.json();
+        typeObjects = jsonData.results;
     } catch (e) {
         console.log("error fetching pokemon types", e);
     }
 
+    // Have to query each type endpoint individually to get details
     try {
-        const requests = typeObjects.results.map((r) => getPokemonTypeDetails(r.name));
-        await Promise.all(requests)
+        const requests = typeObjects.map((r) => getPokemonTypeWithDetails(r.name));
+        const data = await Promise.all(requests)
             .then((complete) => {
-                return complete;
+                // Convert to object for easy access by type name
+                return complete.reduce((typeMap, type) => {
+                    typeMap[type.name] = type;
+                    return typeMap;
+                }, {});
             })
             .catch((e) => {
                 console.log("error", e);
             });
-    } catch (error) {
+        return data;
+    } catch (e) {
         console.log("error fetching pokemon type details", e);
         return [];
     }
 }
 
 export async function getPokemonTypeWithDetails(name) {
+    // Return name & damage relations, get rid of other extraneous type data
     try {
         const res = await fetch(`${POKEAPI_URL}/type/${name}`);
         const typeDetails = await res.json();
+
         return { name, damage_relations: typeDetails.damage_relations };
     } catch (e) {
-        console.log("error fetching pokemon types", e);
-        return {};
+        console.log(`error getting [${name}] details`, e);
+        return { name };
     }
 }

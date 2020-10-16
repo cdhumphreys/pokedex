@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-import { getPokeData } from "./api/pokemon";
+import { getPokemonData } from "./api/pokemon";
 
 import Layout from "../components/Layout";
 import PokemonTypePill from "../components/PokemonTypePill";
@@ -16,7 +16,7 @@ const Pokemon = ({ pmon }) => {
 
     return (
         <Layout>
-            <Link href="/" className="text-white">
+            <Link href="/">
                 <a className="inline-flex flex-row items-center p-4">
                     <svg
                         className="w-6 h-6"
@@ -61,7 +61,7 @@ const Pokemon = ({ pmon }) => {
                                 <td className="px-4 py-2 border border-blue-500 text-right">{weight}</td>
                                 <td className="px-4 py-2 border border-blue-500 flex items-center justify-center flex-wrap">
                                     {pmon.types.map((t) => (
-                                        <PokemonTypePill key={t.type.name} type={t} />
+                                        <PokemonTypePill key={t.type.name} typeName={t.type.name} />
                                     ))}
                                 </td>
                             </tr>
@@ -78,10 +78,11 @@ export default Pokemon;
 export async function getServerSideProps({ query }) {
     const pokedexId = query.id;
     const id = parseInt(pokedexId, 10);
-    const pokemonData = await getPokeData(id - 1, id);
+    const pokemonData = await getPokemonData(id);
+
     return {
         props: {
-            pmon: pokemonData[0],
+            pmon: pokemonData,
         },
     };
 }

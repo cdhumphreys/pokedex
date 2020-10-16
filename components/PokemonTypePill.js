@@ -1,9 +1,8 @@
 import React from "react";
 import styles from "../styles/pokemon-types.module.scss";
 
-const PokemonTypePill = ({ typeName, icon = true, text = true }) => {
+const PokemonTypePill = ({ typeName = "", icon = true, text = true }) => {
     let typeIcon = null;
-
     if (icon) {
         try {
             typeIcon = <img className="w-4 h-4 mx-1" src={`/images/types/${typeName}.png`} alt={typeName} />;
