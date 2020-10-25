@@ -1,5 +1,23 @@
-const POKEAPI_URL = "https://pokeapi.co/api/v2";
-const POKEASSETS_URL = "https://assets.pokemon.com/assets/cms2/img/pokedex/full";
+import {
+    GENERATION_1_START,
+    GENERATION_1_END,
+    GENERATION_2_START,
+    GENERATION_2_END,
+    GENERATION_3_START,
+    GENERATION_3_END,
+    GENERATION_4_START,
+    GENERATION_4_END,
+    GENERATION_5_START,
+    GENERATION_5_END,
+    GENERATION_6_START,
+    GENERATION_6_END,
+    GENERATION_7_START,
+    GENERATION_7_END,
+    GENERATION_8_START,
+    GENERATION_8_END,
+    POKEAPI_URL,
+    POKEASSETS_URL,
+} from "./constants";
 
 // To get types, attributes, moves etc
 // Each endpoint has to be hit individually
@@ -36,7 +54,7 @@ export async function getPokemonData(start, end = null) {
 // Return promise containing pokemon data, image, type data
 function fetchPokemonDetails(pokemonNumber, allTypesData) {
     const num = parseInt(pokemonNumber, 10);
-    const image = getPokemonImage(num);
+    const image = getPokemonImageUrl(num);
     const url = `${POKEAPI_URL}/pokemon/${num}`;
     const pokedexId = `${num}`.padStart(3, "0");
 
@@ -60,49 +78,86 @@ function fetchPokemonDetails(pokemonNumber, allTypesData) {
     return req;
 }
 
-export function getPokemonImage(pokedexNumber) {
+export function getPokemonImageUrl(pokedexNumber) {
     const paddedIndex = `${pokedexNumber}`.padStart(3, "0");
     return `${POKEASSETS_URL}/${paddedIndex}.png`;
 }
 
 export function getGeneration1Pokemon() {
     // 151 Pokemon total
-    return getPokemonData(1, 151);
+    return getPokemonData(GENERATION_1_START, GENERATION_1_END);
 }
 
 export function getGeneration2Pokemon() {
     // 100 Pokemon total
-    return getPokemonData(152, 251);
+    return getPokemonData(GENERATION_2_START, GENERATION_2_END);
 }
 
 export function getGeneration3Pokemon() {
     // 135 Pokemon total
-    return getPokemonData(252, 386);
+    return getPokemonData(GENERATION_3_START, GENERATION_3_END);
 }
 
 export function getGeneration4Pokemon() {
     // 107 Pokemon total
-    return getPokemonData(387, 493);
+    return getPokemonData(GENERATION_4_START, GENERATION_4_END);
 }
 
 export function getGeneration5Pokemon() {
     // 156 Pokemon total
-    return getPokemonData(494, 649);
+    return getPokemonData(GENERATION_5_START, GENERATION_5_END);
 }
 
 export function getGeneration6Pokemon() {
     // 72 Pokemon total
-    return getPokemonData(650, 721);
+    return getPokemonData(GENERATION_6_START, GENERATION_6_END);
 }
 
 export function getGeneration7Pokemon() {
     // 88 Pokemon total
-    return getPokemonData(722, 809);
+    return getPokemonData(GENERATION_7_START, GENERATION_7_END);
 }
 
 export function getGeneration8Pokemon() {
     // 87 Pokemon total
-    return getPokemonData(810, 896);
+    return getPokemonData(GENERATION_8_START, GENERATION_8_END);
+}
+
+export function getGenerationStarters(generationInt) {
+    console.log("GEN INT", generationInt);
+    let starters = [];
+    switch (generationInt) {
+        case 1:
+            starters = [1, 4, 7];
+            break;
+        case 2:
+            starters = [152, 155, 158];
+            break;
+        case 3:
+            starters = [252, 255, 258];
+            break;
+        case 4:
+            starters = [387, 390, 393];
+            break;
+        case 5:
+            starters = [495, 498, 501];
+            break;
+        case 6:
+            starters = [650, 653, 656];
+            break;
+        case 7:
+            starters = [722, 725, 728];
+            break;
+        case 8:
+            starters = [810, 813, 816];
+            break;
+        default:
+            // default as pikachu & eevee
+            starters = [25, 133];
+            break;
+    }
+
+    return starters;
 }
 
 export async function getAllPokemonTypes() {
@@ -147,5 +202,24 @@ export async function getPokemonTypeWithDetails(name) {
     } catch (e) {
         console.log(`error getting [${name}] details`, e);
         return { name };
+    }
+}
+
+export async function getAllPokemonGenerations() {
+    try {
+        const res = await fetch(`${POKEAPI_URL}/generation`);
+        const jsonData = await res.json();
+        const generationNumerals = jsonData.results.map((genData) => {
+            // PokeAPI returns names as generation + '-' + roman numeral e.g. 'generation-ii'
+            let [lowerCaseGenerationNumeral] = genData.name.split("-").slice(-1);
+            if (lowerCaseGenerationNumeral) {
+                return lowerCaseGenerationNumeral.toUpperCase();
+            }
+        });
+
+        return generationNumerals;
+    } catch (e) {
+        console.log("error fetching pokemon types", e);
+        return [];
     }
 }

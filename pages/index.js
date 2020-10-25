@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
-import { getGeneration1Pokemon } from "./api/pokemon";
-
-import Layout from "../components/Layout";
-import Nav from "../components/Nav";
+import { getGeneration1Pokemon, getAllPokemonTypes, getAllPokemonGenerations } from "../api/pokemon";
 import SearchPokemon from "../components/search/SearchPokemon";
 import Sort from "../components/search/Sort";
-import Button from "../components/Button";
+import Options from "../components/search/Options";
+import { Nav, Button, Layout } from "../components/common";
 
-export default function Home({ pokemon }) {
+export default function Home({ pokemon, allPokemonTypes, allPokemonGenerations }) {
     const sortChoices = [
         { displayText: "Smallest number first", key: "pokedexId", direction: "+" },
         { displayText: "Highest number first", key: "pokdexId", direction: "-" },
@@ -38,7 +36,7 @@ export default function Home({ pokemon }) {
                         />
                     </svg>
                 </Button>
-                <Button isPrimary={false}>
+                <Button isPrimary={false} onClick={() => setOptionsPopupIsVisible(true)}>
                     <svg
                         className="w-8 h-8"
                         xmlns="http://www.w3.org/2000/svg"
@@ -68,6 +66,12 @@ export default function Home({ pokemon }) {
                     currentChoice={sortChoice}
                     sortChoices={sortChoices}
                 />
+                <Options
+                    setVisibleFn={setOptionsPopupIsVisible}
+                    visible={optionsPopupIsVisible}
+                    allPokemonTypes={allPokemonTypes}
+                    allPokemonGenerations={allPokemonGenerations}
+                />
             </Layout>
         </>
     );
@@ -76,7 +80,10 @@ export default function Home({ pokemon }) {
 export async function getStaticProps() {
     const pokemon = await getGeneration1Pokemon();
 
+    const allPokemonTypes = await getAllPokemonTypes();
+    const allPokemonGenerations = await getAllPokemonGenerations();
+
     return {
-        props: { pokemon },
+        props: { pokemon, allPokemonTypes, allPokemonGenerations },
     };
 }

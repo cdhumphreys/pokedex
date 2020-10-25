@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-import { getPokemonData } from "./api/pokemon";
+import { getPokemonData } from "../api/pokemon";
 
-import Layout from "../components/Layout";
+import { Layout } from "../components/common";
 import PokemonTypePill from "../components/PokemonTypePill";
 
 // Individual pokemon details page

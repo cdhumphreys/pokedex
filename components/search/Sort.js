@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import Button from "../Button";
-import Popup from "../Popup";
+import React from "react";
+import { Button, Popup } from "../common";
 
 const Sort = ({ visible, setVisibleFn, setterFn, sortChoices, currentChoice }) => {
     return (
