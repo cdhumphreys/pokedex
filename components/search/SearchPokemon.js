@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PokeCard from "../PokeCard";
-import useFuzzySearch from "../hooks/useFuzzySearch";
-import useSort from "../hooks/useSort";
+import { useSort, useFuzzySearch } from "../hooks";
 
 const SearchPokemon = ({ allPokemon, sort }) => {
     // Constants

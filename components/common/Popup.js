@@ -9,11 +9,11 @@ const Popup = ({ visible, closeFn, children }) => {
             }`}
         >
             <div
-                className={`transition duration-500 relative bg-white rounded-lg flex flex-col p-4 w-full lg:w-auto ${
+                className={`max-h-4/5 overflow-y-auto transition duration-500 relative bg-white rounded-lg flex flex-col p-4 w-full lg:w-auto lg:m-4 lg:max-w-screen-lg ${
                     visible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
                 }`}
             >
-                <div onClick={closeFn} className="absolute text-md text-black right-0 top-0 mt-2 mr-2 hidden lg:block">
+                <div onClick={closeFn} className="absolute text-md text-black right-0 top-0 mt-2 mr-2">
                     <svg
                         className="w-6 h-6"
                         xmlns="http://www.w3.org/2000/svg"
