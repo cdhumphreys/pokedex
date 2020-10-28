@@ -16,8 +16,8 @@ const PokemonGeneration = ({ generationNumeral, isSelected, onClick }) => {
             <div className="flex flex-col w-full">
                 <div className="flex flex-row mb-2 justify-around items-center">
                     {/* <div className="grid grid-cols-3 gap-2 mb-2"> */}
-                    {getStarterImages(generationNumeral).map((url) => (
-                        <img src={url} className="h-16 w-16 md:w-1/3 md:h-auto" />
+                    {getStarterImages(generationNumeral).map((url, i) => (
+                        <img key={`${generationNumeral}-${i}`} src={url} className="h-16 w-16 md:w-1/3 md:h-auto" />
                     ))}
                 </div>
                 <div>Generation {generationNumeral}</div>

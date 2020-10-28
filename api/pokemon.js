@@ -124,7 +124,6 @@ export function getGeneration8Pokemon() {
 }
 
 export function getGenerationStarters(generationInt) {
-    console.log("GEN INT", generationInt);
     let starters = [];
     switch (generationInt) {
         case 1:
