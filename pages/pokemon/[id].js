@@ -1,18 +1,28 @@
 import React from "react";
 import Link from "next/link";
 
-import { getPokemonData } from "../api/pokemon";
+import { getPokemonData, getSpeciesData } from "../../api/pokemon";
 
-import { Layout } from "../components/common";
-import PokemonTypePill from "../components/PokemonTypePill";
+import { Layout } from "../../components/common";
+import PokemonTypePill from "../../components/PokemonTypePill";
 
 // Individual pokemon details page
-const Pokemon = ({ pmon }) => {
+const Pokemon = ({ pokemonData }) => {
     // Weight and height are given to 1dp without the decimal point, God knows why you would do this
-    const heightString = String(pmon.height).padStart(2, "0");
-    const weightString = String(pmon.weight).padStart(2, "0");
+    const heightString = String(pokemonData.height).padStart(2, "0");
+    const weightString = String(pokemonData.weight).padStart(2, "0");
     const height = `${heightString.slice(0, heightString.length - 1)}.${heightString.slice(-1)}`;
     const weight = `${weightString.slice(0, weightString.length - 1)}.${weightString.slice(-1)}`;
+
+    console.log(pokemonData);
+    
+    let flavourText = '';
+    try {
+      flavourText = pokemonData.speciesData.flavor_text_entries[0].flavor_text;
+      
+    } catch (error) {
+      flavourText = 'No description found'
+    }
 
     return (
         <Layout>
@@ -36,15 +46,15 @@ const Pokemon = ({ pmon }) => {
             </Link>
             <div className="space-y-10">
                 <section>
-                    <h1 className="capitalize text-4xl font-bold text-center mb-2">{pmon.name}</h1>
+                    <h1 className="capitalize text-4xl font-bold text-center mb-2">{pokemonData.name}</h1>
                     <div className="max-w-50 border-2 border-blue-300 bg-white rounded-lg">
-                        <img className="mx-auto" src={pmon.image} alt={pmon.name} />
+                        <img className="mx-auto" src={pokemonData.image} alt={pokemonData.name} />
                     </div>
-                    <p>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error tenetur veritatis impedit
-                        dolorem nulla vel quidem ipsum veniam adipisci, cum eligendi aliquid earum, numquam aliquam
-                        fugiat, illum deserunt. In, non.
-                    </p>
+                    {flavourText &&
+                      <p>
+                          {flavourText}
+                      </p>
+                    }
                 </section>
                 <section>
                     <table className="table-auto mx-auto">
@@ -52,7 +62,7 @@ const Pokemon = ({ pmon }) => {
                             <tr>
                                 <th className="w-1/5 px-4 py-2">Height (m)</th>
                                 <th className="w-1/5 px-4 py-2">Weight (kg)</th>
-                                <th className="w-3/5 px-4 py-2">Type{pmon.types.length > 1 ? "s" : ""}</th>
+                                <th className="w-3/5 px-4 py-2">Type{pokemonData.types.length > 1 ? "s" : ""}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,7 +70,7 @@ const Pokemon = ({ pmon }) => {
                                 <td className="px-4 py-2 border border-blue-500 text-right">{height}</td>
                                 <td className="px-4 py-2 border border-blue-500 text-right">{weight}</td>
                                 <td className="px-4 py-2 border border-blue-500 flex items-center justify-center flex-wrap">
-                                    {pmon.types.map((t) => (
+                                    {pokemonData.types.map((t) => (
                                         <PokemonTypePill key={t.type.name} typeName={t.type.name} />
                                     ))}
                                 </td>
@@ -75,14 +85,26 @@ const Pokemon = ({ pmon }) => {
 
 export default Pokemon;
 
-export async function getServerSideProps({ query }) {
-    const pokedexId = query.id;
-    const id = parseInt(pokedexId, 10);
-    const pokemonData = await getPokemonData(id);
-
-    return {
-        props: {
-            pmon: pokemonData,
+export async function getServerSideProps({ params }) {
+    const pokedexId = params.id;
+    try {
+      const id = parseInt(pokedexId, 10);
+      const pokemonData = await getPokemonData(id);
+      const speciesData = await getSpeciesData(id);
+      return {
+          props: {
+            pokemonData: {...pokemonData, speciesData},
+          },
+      };
+      
+    } catch (error) {
+      console.log('Error fetching Pokemon data:', error);
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
         },
-    };
+      }
+    }
+
 }

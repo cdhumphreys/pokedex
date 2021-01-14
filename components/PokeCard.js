@@ -28,7 +28,7 @@ const PokeCard = ({ pokemon }) => {
     return (
         <div className={`relative py-6 px-4 my-2 rounded-lg ${bgClasses} ${boxShadowClasses}`}>
             <div className={styles["bg--hex"]}></div>
-            <Link href={`/pokemon?id=${pokedexId}`}>
+            <Link href={`/pokemon/${pokedexId}`}>
                 <a className="flex flex-row items-center justify-between text-lg">
                     <div className="flex flex-col items-start leading-none space-y-2 z-10">
                         <h3 className="text-sm text-gray-800">#{pokedexId}</h3>

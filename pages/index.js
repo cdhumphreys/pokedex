@@ -4,10 +4,10 @@ import { getGeneration1Pokemon, getAllPokemonTypes, getAllPokemonGenerations } f
 import SearchPokemon from "../components/search/SearchPokemon";
 import Sort from "../components/search/Sort";
 import Options from "../components/search/Options";
-import { Layout } from "../components/common";
 
 import { Box, Grommet, Layer, Button, Heading, Text, Nav } from "grommet";
 import { FormClose, Descend, List } from "grommet-icons";
+
 const theme = {
     global: {
         font: {
@@ -43,7 +43,7 @@ export default function Home({ pokemon, allPokemonTypes, allPokemonGenerations }
                 pad="xsmall"
                 elevation="small"
                 background="white"
-                style={{ position: "sticky", top: "0", zIndex: 100 }}
+                style={{ position: "sticky", top: "0", zIndex: 10 }}
             >
                 <Button as={Link} href="/">
                     Home

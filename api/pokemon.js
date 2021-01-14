@@ -83,6 +83,17 @@ export function getPokemonImageUrl(pokedexNumber) {
     return `${POKEASSETS_URL}/${paddedIndex}.png`;
 }
 
+
+export function getSpeciesData(pokedexNumber) {
+    const url = `${POKEAPI_URL}/pokemon-species/${pokedexNumber}/`;
+
+
+    const req = fetch(url)
+        .then((response) => response.json())
+        .catch((e) => console.log("error fetching pokemon species data", e));
+    return req;
+}
+
 export function getGeneration1Pokemon() {
     // 151 Pokemon total
     return getPokemonData(GENERATION_1_START, GENERATION_1_END);
