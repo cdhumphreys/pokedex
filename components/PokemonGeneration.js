@@ -1,7 +1,8 @@
 import React from "react";
-import { Button } from "./common";
+import { Box, Button, Image, Heading } from "grommet";
+// import { Button } from "./common";
 import { getPokemonImageUrl, getGenerationStarters } from "../api/pokemon";
-import { convertNumeralToInt } from "../utils";
+import { convertNumeralToInt } from "./utils";
 
 const PokemonGeneration = ({ generationNumeral, isSelected, onClick }) => {
     function getStarterImages(generationNumeral) {
@@ -12,16 +13,22 @@ const PokemonGeneration = ({ generationNumeral, isSelected, onClick }) => {
     }
 
     return (
-        <Button isPrimary={isSelected} onClick={(e) => onClick(e, isSelected, generationNumeral)}>
-            <div className="flex flex-col w-full">
-                <div className="flex flex-row mb-2 justify-around items-center">
-                    {/* <div className="grid grid-cols-3 gap-2 mb-2"> */}
+        <Button
+            primary={isSelected}
+            plain={false}
+            size="medium"
+            onClick={(e) => onClick(e, isSelected, generationNumeral)}
+        >
+            <Box fill alignContent="center" justify="center" direction="column">
+                <Box height="medium" width="medium" direction="row">
                     {getStarterImages(generationNumeral).map((url, i) => (
-                        <img key={`${generationNumeral}-${i}`} src={url} className="h-16 w-16 md:w-1/3 md:h-auto" />
+                        <Image fit="contain" key={`${generationNumeral}-${i}`} src={url} />
                     ))}
-                </div>
-                <div>Generation {generationNumeral}</div>
-            </div>
+                </Box>
+                <Heading size="xsmall" textAlign="center">
+                    Generation {generationNumeral}
+                </Heading>
+            </Box>
         </Button>
     );
 };

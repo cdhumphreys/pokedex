@@ -1,16 +1,11 @@
 import React from "react";
-import { Popup, Range } from "../common";
+import { Grid, Box, Heading, Text, Button } from "grommet";
 import PokemonGeneration from "../PokemonGeneration";
+import PokemonTypePill from "../PokemonTypePill";
 import { useLocalStorage } from "../hooks";
-import { GENERATION_1_START, GENERATION_8_END } from "../../api/constants";
 
-export const Options = ({ visible, setVisibleFn, allPokemonTypes, allPokemonGenerations }) => {
+export const Options = ({ allPokemonTypes, allPokemonGenerations, closePopupFn }) => {
     const [selectedGenerations, setSelectedGenerations] = useLocalStorage("generations", ["I"]);
-    const [pokedexNumberRange, setPokedexNumberRange] = useLocalStorage("pokedexNumberRange", [
-        GENERATION_1_START,
-        GENERATION_8_END,
-    ]);
-    const [selectedPokemonTypes, setSelectedPokemonTypes] = useLocalStorage("pokemonTypes", allPokemonTypes);
     const [pokemonEffectiveAgainst, setPokemonEffectiveAgainst] = useLocalStorage("pokemonEffectiveAgainst", []);
     const [pokemonWeakAgainst, setPokemonWeakAgainst] = useLocalStorage("pokemonWeakAgainst", []);
 
@@ -23,41 +18,108 @@ export const Options = ({ visible, setVisibleFn, allPokemonTypes, allPokemonGene
         }
     };
 
+    const onSelectEffectiveAgainstType = (e, type) => {
+        e.stopPropagation();
+        if (pokemonEffectiveAgainst.includes(type)) {
+            setPokemonEffectiveAgainst(pokemonEffectiveAgainst.filter((t) => t !== type));
+        } else {
+            setPokemonEffectiveAgainst([...pokemonEffectiveAgainst, type]);
+        }
+    };
+
+    const onSelectWeakAgainstType = (e, type) => {
+        e.stopPropagation();
+        if (pokemonWeakAgainst.includes(type)) {
+            setPokemonWeakAgainst(pokemonWeakAgainst.filter((t) => t !== type));
+        } else {
+            setPokemonWeakAgainst([...pokemonWeakAgainst, type]);
+        }
+    };
+
+    const onReset = () => {
+        setSelectedGenerations(["I"]);
+        setPokemonEffectiveAgainst([...Object.keys(allPokemonTypes)]);
+        setPokemonWeakAgainst([...Object.keys(allPokemonTypes)]);
+    };
+
     return (
-        <div>
-            <Popup visible={visible} closeFn={() => setVisibleFn(false)}>
-                <div className="mb-6">
-                    <h3 className="text-xl font-bold">Pokédex Options</h3>
-                    <h4 className="text-md text-gray-600">Configure your Pokédex!</h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-3 lg:gap-2 mb-6">
-                    {allPokemonGenerations.map((generationNumeral) => {
-                        const isSelected = selectedGenerations.includes(generationNumeral);
-                        return (
-                            <PokemonGeneration
-                                key={generationNumeral}
-                                generationNumeral={generationNumeral}
-                                isSelected={isSelected}
-                                onClick={onSelectGeneration}
-                            />
-                        );
-                    })}
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="pokedexRange" className="mb-2">
-                        Number Range
-                    </label>
-                    <Range
-                        name="pokedexRange"
-                        id="pokedexRange"
-                        min={GENERATION_1_START}
-                        minValue={pokedexNumberRange[0]}
-                        max={GENERATION_8_END}
-                        maxValue={pokedexNumberRange[1]}
-                    />
-                </div>
-            </Popup>
-        </div>
+        <Box fill direction="column" gap="medium">
+            <Box justify="center" align="center" pad={{ vertical: "medium", horizontal: "small" }}>
+                <Heading level="3" textAlign="center" color="dark-1" margin={{ bottom: "small" }}>
+                    Pokédex Options
+                </Heading>
+                <Text color="dark-3">Configure your Pokédex!</Text>
+            </Box>
+            <Box
+                style={{ boxShadow: "inset 0px 0px 4px 0px rgba(0, 0, 0, 0.5)" }}
+                pad={{ vertical: "medium", horizontal: "small" }}
+                overflow={{ vertical: "auto", horizontal: "hidden" }}
+                direction="row"
+                wrap
+            >
+                <Box width="full" margin={{ bottom: "medium" }}>
+                    <Heading level="5">Effective Against</Heading>
+                    <Grid columns="xsmall" gap="small" pad="small">
+                        {Object.keys(allPokemonTypes)
+                            .sort((a, b) => (a < b ? -1 : 1))
+                            .map((type) => {
+                                const isSelected = pokemonEffectiveAgainst.includes(type);
+                                return (
+                                    <PokemonTypePill
+                                        key={type}
+                                        typeName={type}
+                                        text={true}
+                                        selected={isSelected}
+                                        onClick={(e) => onSelectEffectiveAgainstType(e, type)}
+                                    />
+                                );
+                            })}
+                    </Grid>
+                </Box>
+                <Box width="full" margin={{ bottom: "medium" }}>
+                    <Heading level="5">Weak Against</Heading>
+                    <Grid gap="small" columns="xsmall" pad="small">
+                        {Object.keys(allPokemonTypes)
+                            .sort((a, b) => (a < b ? -1 : 1))
+                            .map((type) => {
+                                const isSelected = pokemonWeakAgainst.includes(type);
+                                return (
+                                    <PokemonTypePill
+                                        key={type}
+                                        typeName={type}
+                                        text={true}
+                                        selected={isSelected}
+                                        onClick={(e) => onSelectWeakAgainstType(e, type)}
+                                    />
+                                );
+                            })}
+                    </Grid>
+                </Box>
+                <Box width="full" margin={{ bottom: "medium" }}>
+                    <Grid columns={["small", "small", "small"]} rows="xsmall" gap="small" pad="small">
+                        {allPokemonGenerations.map((generationNumeral) => {
+                            const isSelected = selectedGenerations.includes(generationNumeral);
+                            return (
+                                <PokemonGeneration
+                                    key={generationNumeral}
+                                    generationNumeral={generationNumeral}
+                                    isSelected={isSelected}
+                                    onClick={onSelectGeneration}
+                                />
+                            );
+                        })}
+                    </Grid>
+                </Box>
+            </Box>
+            <Box direction="row" justify="center" align="center" gap="small">
+                <Button size="medium" plain={false} onClick={onReset}>
+                    Reset
+                </Button>
+                <Button size="medium" onClick={closePopupFn} primary plain={false}>
+                    Apply
+                </Button>
+            </Box>
+        </Box>
     );
 };
 

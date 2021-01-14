@@ -177,6 +177,9 @@ export async function getAllPokemonTypes() {
             .then((complete) => {
                 // Convert to object for easy access by type name
                 return complete.reduce((typeMap, type) => {
+                    if (["shadow", "unknown"].includes(type.name)) {
+                        return typeMap;
+                    }
                     typeMap[type.name] = type;
                     return typeMap;
                 }, {});

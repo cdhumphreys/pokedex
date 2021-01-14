@@ -1,10 +1,27 @@
 import React, { useState } from "react";
-
+import Link from "next/link";
 import { getGeneration1Pokemon, getAllPokemonTypes, getAllPokemonGenerations } from "../api/pokemon";
 import SearchPokemon from "../components/search/SearchPokemon";
 import Sort from "../components/search/Sort";
 import Options from "../components/search/Options";
-import { Nav, Button, Layout } from "../components/common";
+import { Layout } from "../components/common";
+
+import { Box, Grommet, Layer, Button, Heading, Text, Nav } from "grommet";
+import { FormClose, Descend, List } from "grommet-icons";
+const theme = {
+    global: {
+        font: {
+            family: "sans-serif",
+            size: "18px",
+            height: "20px",
+        },
+        colors: {
+            brand: "#EF4444",
+            brandTransparent: "rgba(239, 68, 68, 0.5)",
+            focus: "#80A1D4",
+        },
+    },
+};
 
 export default function Home({ pokemon, allPokemonTypes, allPokemonGenerations }) {
     const sortChoices = [
@@ -18,62 +35,68 @@ export default function Home({ pokemon, allPokemonTypes, allPokemonGenerations }
     const [optionsPopupIsVisible, setOptionsPopupIsVisible] = useState(false);
 
     return (
-        <>
-            <Nav>
-                <Button type="button" onClick={() => setSortPopupIsVisible(!sortPopupIsVisible)} isPrimary={true}>
-                    <svg
-                        className="w-8 h-8"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                        />
-                    </svg>
+        <Grommet theme={theme}>
+            <Nav
+                direction="row"
+                align="center"
+                justify="end"
+                pad="xsmall"
+                elevation="small"
+                background="white"
+                style={{ position: "sticky", top: "0", zIndex: 100 }}
+            >
+                <Button as={Link} href="/">
+                    Home
                 </Button>
-                <Button isPrimary={false} onClick={() => setOptionsPopupIsVisible(true)}>
-                    <svg
-                        className="w-8 h-8"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                        />
-                    </svg>
-                </Button>
+                <Button
+                    margin="xsmall"
+                    plain={false}
+                    onClick={() => setSortPopupIsVisible(!sortPopupIsVisible)}
+                    icon={<Descend />}
+                />
+                <Button margin="xsmall" plain={false} onClick={() => setOptionsPopupIsVisible(true)} icon={<List />} />
             </Nav>
-            <Layout title="NextJS Pokedex">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold">Pokédex</h1>
-                    <h2 className="text-md">Search for Pokémon by name or using the National Pokédex number.</h2>
-                </div>
+            <Box pad="medium">
+                <Box margin={{ bottom: "medium" }}>
+                    <Heading level="1" textAlign="center">
+                        Pokédex
+                    </Heading>
+                    <Text textAlign="center">Search for Pokémon by name or using the National Pokédex number.</Text>
+                </Box>
                 <SearchPokemon allPokemon={pokemon} sort={sortChoice} />
-                <Sort
-                    visible={sortPopupIsVisible}
-                    setVisibleFn={setSortPopupIsVisible}
-                    setterFn={setSortChoice}
-                    currentChoice={sortChoice}
-                    sortChoices={sortChoices}
-                />
-                <Options
-                    setVisibleFn={setOptionsPopupIsVisible}
-                    visible={optionsPopupIsVisible}
-                    allPokemonTypes={allPokemonTypes}
-                    allPokemonGenerations={allPokemonGenerations}
-                />
-            </Layout>
-        </>
+            </Box>
+            {sortPopupIsVisible && (
+                <Layer onClickOutside={() => setSortPopupIsVisible(false)} onEsc={() => setSortPopupIsVisible(false)}>
+                    <Box fill pad="small">
+                        <Box justify="end" align="center" direction="row">
+                            <Button icon={<FormClose />} onClick={() => setSortPopupIsVisible(false)}></Button>
+                        </Box>
+                        <Box fill>
+                            <Sort setterFn={setSortChoice} currentChoice={sortChoice} sortChoices={sortChoices} />
+                        </Box>
+                    </Box>
+                </Layer>
+            )}
+            {optionsPopupIsVisible && (
+                <Layer
+                    onClickOutside={() => setOptionsPopupIsVisible(false)}
+                    onEsc={() => setOptionsPopupIsVisible(false)}
+                >
+                    <Box fill pad="small" direction="column">
+                        <Box justify="end" align="center" direction="row">
+                            <Button icon={<FormClose />} onClick={() => setOptionsPopupIsVisible(false)}></Button>
+                        </Box>
+                        <Box>
+                            <Options
+                                closePopupFn={() => setOptionsPopupIsVisible(false)}
+                                allPokemonTypes={allPokemonTypes}
+                                allPokemonGenerations={allPokemonGenerations}
+                            />
+                        </Box>
+                    </Box>
+                </Layer>
+            )}
+        </Grommet>
     );
 }
 

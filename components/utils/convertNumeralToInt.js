@@ -1,4 +1,4 @@
-export const convertNumeralToInt = (numeral) => {
+export default function convertNumeralToInt(numeral) {
     const numeralMap = {
         I: 1,
         V: 5,
@@ -19,4 +19,4 @@ export const convertNumeralToInt = (numeral) => {
     }, 0);
 
     return number;
-};
+}

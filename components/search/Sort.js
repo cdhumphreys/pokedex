@@ -1,24 +1,27 @@
 import React from "react";
-import { Button, Popup } from "../common";
+// import { Button } from "../common";
+import { Box, Heading, Button, Text } from "grommet";
 
-const Sort = ({ visible, setVisibleFn, setterFn, sortChoices, currentChoice }) => {
+const Sort = ({ setterFn, sortChoices, currentChoice }) => {
     return (
-        <Popup visible={visible} closeFn={() => setVisibleFn(false)}>
-            <div className="mb-6">
-                <h3 className="text-xl font-bold">Sort</h3>
-                <h4 className="text-md text-gray-600">Sort Pokémon alphabetically or by National Pokédex number!</h4>
-            </div>
+        <Box fill>
+            <Box justify="center" align="center" margin={{ bottom: "medium" }}>
+                <Heading level="3" textAlign="center" color="dark-1" margin={{ bottom: "small" }}>
+                    Sort
+                </Heading>
+                <Text color="dark-3">Sort Pokémon alphabetically or by National Pokédex number!</Text>
+            </Box>
             <div className="flex flex-col justify-items-stretch items-center space-y-4">
                 {sortChoices.map((sortObj) => {
                     const isActive = currentChoice.direction === sortObj.direction && currentChoice.key === sortObj.key;
                     return (
                         <Button
                             key={sortObj.key + sortObj.direction}
-                            isPrimary={isActive}
+                            primary={isActive}
+                            plain={false}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setterFn(sortObj);
-                                setVisibleFn(false);
                             }}
                         >
                             {sortObj.displayText}
@@ -26,7 +29,7 @@ const Sort = ({ visible, setVisibleFn, setterFn, sortChoices, currentChoice }) =
                     );
                 })}
             </div>
-        </Popup>
+        </Box>
     );
 };
 

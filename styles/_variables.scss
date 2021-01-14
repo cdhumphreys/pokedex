@@ -40,13 +40,6 @@ $types: ("grass": $grass,
     "fairy": $fairy,
     "unknown": $unknown,
 );
-// Background colour generators
-@each $type,
-$colour in $types {
-    .bg--#{$type} {
-        background-color: $colour;
-    }
-}
 
 @each $type,
 $colour in $types {
@@ -58,13 +51,27 @@ $colour in $types {
         }
     }
 }
-
+// Background colour generators &&
 // Box shadow generators
-$boxShadowParams: 0px 4px 10px 2px;
+$boxShadowParams: 0px 2px 5px 2px;
 @each $type,
 $colour in $types {
     .bg--#{$type} {
-        box-shadow: $boxShadowParams rgba($colour, 0.5);
+        box-shadow: $boxShadowParams rgba($colour, 0.6);
+        background-color: $colour;
+        color: white;
+        
+        
+        &--noFill {
+            background-color: white;
+            color: gray;
+            box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 1);
+        }
+
+        &--noShadow {
+            box-shadow: none;
+        }
+        
     }
 }
 

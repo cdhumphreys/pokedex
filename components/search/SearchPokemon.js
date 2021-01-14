@@ -24,8 +24,8 @@ const SearchPokemon = ({ allPokemon, sort }) => {
 
     return (
         <div>
-            <div className="bg-gray-400 flex flex-row rounded-lg items-center mb-10 py-2 px-2">
-                <span className="px-4">
+            <div className="border-2 flex flex-row rounded-lg items-center mb-10 py-2 px-2 mx-auto w-full md:w-2/3">
+                <span className="px-2 md:px-4">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

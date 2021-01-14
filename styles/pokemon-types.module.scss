@@ -1,10 +1,20 @@
 @use 'variables'as vars;
 
 .type-pill {
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.25);
+    // color: white;
+    // box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0px 0px 2px 0px rgba(255, 255, 255, 1);
     img {
-        filter: brightness(0) invert(1) drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
+        // Adding a drop shadow to the pokemon type icon
+        filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
+    }
+    
+    &--plain {
+        box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 1);
+        // background-color: gray;
+        img {
+
+            filter: brightness(0) invert(1) drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.5));
+        }
     }
 }
