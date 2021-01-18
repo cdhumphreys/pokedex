@@ -30,7 +30,7 @@ const PokeCard = ({ pokemon }) => {
             <div className={styles["bg--hex"]}></div>
             <Link href={`/pokemon/${pokedexId}`}>
                 <a className="flex flex-row items-center justify-between text-lg">
-                    <div className="flex flex-col items-start leading-none space-y-2 z-10">
+                    <div className="flex flex-col items-start leading-none space-y-2">
                         <h3 className="text-sm text-gray-800">#{pokedexId}</h3>
                         <h2 className="text-2xl capitalize text-white font-bold">{name}</h2>
                         <div className="grid gap-1 grid-cols-2 grid-flow-row">
